@@ -1,6 +1,6 @@
 # NABARD Schemes Chatbot
 
-This project involves an offline, AI-powered chatbot application specifically designed for farmers. It provides information on NABARD schemes to farmers via an easy-to-use chat interface.
+This project involves an offline, AI-powered chatbot application called **CUTY** specifically designed for farmers. It provides information on NABARD schemes to farmers via an easy-to-use chat interface.
 
 ![Chatbot Interface](/screenshots/1.png)
 
