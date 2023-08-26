@@ -65,17 +65,17 @@ android {
     signingConfigs {
 
         release   {
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['releaseAlias']
-            keyPassword keystoreProperties['releasePassword']
+            storeFile file('C:\\Users\\user\\Desktop\\AI\\signandroid\\sign.jks')
+            storePassword 'kaliveedu@123'
+            keyAlias = 'key0'
+            keyPassword 'kaliveedu@123'
         }
-        
+
         debug   {
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['releaseAlias']
-            keyPassword keystoreProperties['releasePassword']
+            storeFile file('C:\\Users\\user\\Desktop\\AI\\signandroid\\sign.jks')
+            storePassword 'kaliveedu@123'
+            keyAlias = 'key0'
+            keyPassword 'kaliveedu@123'
         }
 
     }

@@ -4,13 +4,15 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sherpa/ModelFilePath.dart';
 import 'package:sherpa/lib.dart';
 import 'package:system_info_plus/system_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
+import 'package:image_picker/image_picker.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -23,12 +25,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Sherpa',
+      title: 'Cuty',
       theme: MyThemes().getTheme(),
       // ThemeData(
       //   colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
       //       .copyWith(background: Colors.grey.shade800)),
-      home: const MyHomePage(title: 'Sherpa'),
+      home: const MyHomePage(title: 'Cuty'),
     );
   }
 }
@@ -60,12 +62,36 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-
+String extractedText = '';
 class _MyHomePageState extends State<MyHomePage> {
   String log = "";
   String result = "";
   Lib? lib;
+  XFile? _pickedImage;
+  String _extractedText = '';
 
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _pickedImage = pickedFile;
+        _extractedText = '';
+      });
+      final text = await FlutterTesseractOcr.extractText(pickedFile.path);
+      setState(() {
+        _extractedText = text;
+        extractedText = text;
+      });
+    }
+  }
+
+  void _clearImage() {
+    setState(() {
+      _pickedImage = null;
+      _extractedText = '';
+    });
+  }
   String _ram = "\nCalcul en cours...";
   Color color = Colors.black;
   ParamsLlama paramsLlama = ParamsLlama();
@@ -75,20 +101,106 @@ class _MyHomePageState extends State<MyHomePage> {
   final ScrollController _consoleScrollController = ScrollController();
 
   String prePrompt = "";
-
   List<String> defaultPrePrompts = [
-    'Transcript of a dialog, where the User interacts with an Assistant named Bob. Bob is helpful, kind, honest, good at writing, and never fails to answer the User\'s requests immediately and with precision.\n\n'
-      'User: Hello, Bob.\n'
-      'Bob: Hello. How may I help you today?\n'
-      'User: Please tell me the largest city in Europe.\n'
-      'Bob: Sure. The largest city in Europe is Moscow, the capital of Russia.\n'
-      'User:',
-    'Sherpa: Hello, I\'m Sherpa, your personal assistant. I can write, complex mails, code and even songs\n'
-        'User: Hello how are you ?\n'
-        'Sherpa: I\'m fine, thank you. How are you ?\n'
-        'User: I\'m fine too, thanks.\n'
-        'Sherpa: That\'s good to hear\n'
-        'User:',
+    'Cuty will answer User quesion and has to wait to get the question from the User\n'
+   'Cuty: Hello, I\'m Cuty, your personal AI assistant. I can help with NABARD governemnt benefits\n'
+    'User: Hello how are you ?\n'
+    'Cuty: I\'m fine, thank you. How are you ?\n'
+    'User: I\'m fine too, thanks.\n'
+    'Cuty: That\'s good to hear\n'
+    'User:',
+
+  ];
+
+  List<String> defaultPrePromptsnew = [
+
+    'Cuty: I am a document analyzer AI companion. I can help with you in summarizing, and followup questions. Here is extracted text from the document you uploaded\n'
+    'Personal Health Record\n'
+    'Personal Information\n'
+    'First Name\n'
+    'Last Name\n'
+    'Preferred Name\n'
+    'Patient Identifier\n'
+    'Martha\n'
+    'Steel\n'
+    'Martha\n'
+    'ABC123\n'
+    'Gender\n'
+    'Date of Birth\n'
+    'Blood Type\n'
+    'Last Updated Date\n'
+    'F\n'
+    '10/13/2001\n'
+    'O-\n'
+     '01/19/2023\n'
+    'Address\n'
+    'City\n'
+    'State\n'
+    'Zip Code\n'
+    '123 Sample Street\n'
+    'Sample City\n'
+    'AZ\n'
+    '12345\n'
+    'Emergency Contact\n'
+    'Full Name\n'
+    'Relationship\n'
+    'Contact Number\n'
+    'Janet Steel\n'
+    'Mother\n'
+    '555-5555\n'
+    'Full Name\n'
+    'Relationship\n'
+    'Contact Number\n'
+    'Susan Steel\n'
+    'Sister\n'
+    '555-5555\n'
+    'Insurance Information\n'
+    'Insurance Carrier\n'
+    'Insurance Plan\n'
+    'Contact Number\n'
+    'A1 Insurers\n'
+    'Comprehensive Plan\n'
+    '555-5555\n'
+    'Policy Number\n'
+    'Group Number\n'
+    'Social Security Number\n'
+    '12345\n'
+    '123\n'
+    '123-45-6789\n'
+    'Health Information\n'
+    'Physician Information\n'
+    'Name\n'
+    'Designation/Specialty\n'
+    'Phone\n'
+    'Address\n'
+    'Notes\n'
+    'Dr. Max Smith\n'
+    'Family Doctor\n'
+    '555-5555\n'
+    'Family Doctors\n'
+    '26 Sample\n'
+    'Terrace\n'
+    'Dr. Ella Lee\n'
+    'Endocrinologist\n'
+    '555-5555\n'
+    'Sample Specialist\n'
+    'Centre,\n'
+    '123 Sample Road\n'
+    'Ms. Lena Yip\n'
+    'ENT surgeon\n'
+    '555-5555\n'
+    'Lena performed\n'
+    'my thyroidectomy\n'
+    'in 2021\n'
+    'Known Medical Condition (s)\n'
+    "Grave's disease- treated with thyroidectomy in 2021 and managed with levothyroxine\n"
+    'Allergies\n'
+    'Penicillin\n'
+    'Powered by\n'
+    'http://Carepatron.com\n'
+    'carepatron\n'
+    'You can ask questions about this text\n'
+    'User:'
   ];
 
   bool inProgress = false;
@@ -361,6 +473,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ],
                     ),
+
                   ElevatedButton(
                     onPressed: () async {
                       await addPrePromptAlert();
@@ -377,6 +490,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
+
           actions: [
             TextButton(
               child: const Text("OK",
@@ -481,11 +595,9 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ListBody(
                 children: [
                   const SelectableText(
-                      "This app is a demo of the llama.cpp model.\n\n"
-                      "You can find the source code of this app on GitHub\n\n"
-                      'It was made on Flutter using an implementation of ggerganov/llama.cpp recompiled to work on mobiles\n\n'
-                      'The LLaMA models are officially distributed by Meta and will never be provided by us\n\n'
-                      'It was made by Maxime GUERIN and Thibaut LEAUX from the french company Bip-Rep based in Lyon (France)'),
+                      "This app is developed by Nandakishor, a researcher from IIT Palakkad.\n\n"
+                      "CEO Convai Innovations India\n\n"
+                 ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -496,7 +608,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       shadowColor: Colors.transparent,
                     ),
                     onPressed: () async {
-                      var url = 'https://bip-rep.com';
+                      var url = 'http://convaiinnovations.com/';
                       if (await canLaunchUrl(Uri.parse(url))) {
                         await launchUrl(Uri.parse(url));
                       } else {
@@ -504,7 +616,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       }
                     },
                     child: Image.asset(
-                      "assets/biprep.jpg",
+                      "assets/logo.jpg",
                       width: 100,
                       height: 100,
                     ),
@@ -638,6 +750,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
+
       body: Stack(
         children: [
           Container(
@@ -696,6 +809,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ],
                           ),
                         ),
+
                       if (fileState == FileState.notFound)
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -718,9 +832,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
+
                             ],
                           ),
                         ),
+
                       if (fileState == FileState.found) ...[
                         if (showParams) ...[
                           Padding(
@@ -1662,7 +1778,7 @@ class ParamsLlama {
   TextEditingController n_ctxController = TextEditingController()..text = "512";
   TextEditingController top_kController = TextEditingController()..text = "40";
   TextEditingController top_pController = TextEditingController()..text = "0.9";
-  TextEditingController tempController = TextEditingController()..text = "0.80";
+  TextEditingController tempController = TextEditingController()..text = "0.08";
   TextEditingController repeat_penaltyController = TextEditingController()
     ..text = "1.10";
   TextEditingController n_batchController = TextEditingController()..text = "8";
@@ -1801,7 +1917,7 @@ class ParamsLlama {
     n_ctxController.text = "512";
     top_kController.text = "40";
     top_pController.text = "0.9";
-    tempController.text = "0.80";
+    tempController.text = "0.00";
     repeat_penaltyController.text = "1.10";
     n_batchController.text = "8";
     saveAll();
