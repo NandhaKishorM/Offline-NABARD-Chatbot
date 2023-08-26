@@ -2,7 +2,7 @@
 
 This project involves an offline, AI-powered chatbot application specifically designed for farmers. It provides information on NABARD schemes to farmers via an easy-to-use chat interface.
 
-![Chatbot Interface](./screenshots/chatbot_interface.png)
+![Chatbot Interface](/screenshots/1.png)
 
 ## Features
 
@@ -17,7 +17,7 @@ This project involves an offline, AI-powered chatbot application specifically de
 - Natural Language Processing: User input processing and conversational output generation.
 - Mobile Application Development: The solution is packaged into a mobile application.
 
-![Technology Used](./screenshots/technology_used.png)
+![Technology Used](/screenshots/technology.jpg)
 
 ## Installation
 
