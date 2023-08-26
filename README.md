@@ -21,7 +21,7 @@ This project involves an offline, AI-powered chatbot application specifically de
 
 ## Installation
 
-Provide detailed instructions on how to install and run your project here.
+Clone the repository and use android studio to build
 
 
 ## License
