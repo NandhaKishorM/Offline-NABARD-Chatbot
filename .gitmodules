@@ -1,1 +1,5 @@
 
+[submodule "src/llama.cpp"]
+	path = src/llama.cpp
+	url = https://github.com/ggerganov/llama.cpp.git
+	branch = cuda-70b-2
